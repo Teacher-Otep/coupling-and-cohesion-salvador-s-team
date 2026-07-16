@@ -1,0 +1,2 @@
+Customer: Juan Dela Cruz | Item: Caramel Macchiato | Total: 168.0
+Customer: Juan Dela Cruz | Item: Java Chip Frappe | Total: 168.0
