@@ -1,35 +1,45 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.coffeeshop.naive;
 
-/**
- * @author Nataniel
- * Responsibility: Controller (Coordinating the flow of order processing)
- */
-public class OrderController {
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class OrderProcessor {
     
-    // Dependencies are kept private and final (Loose Coupling)
-    private final TaxCalculator taxCalculator;
-    private final ReceiptPrinter receiptPrinter;
-    private final OrderRepository orderRepository;
-
-    // Constructor Dependency Injection (Passing the required tools to the controller)
-    public OrderController(TaxCalculator taxCalculator, ReceiptPrinter receiptPrinter, OrderRepository orderRepository) {
-        this.taxCalculator = taxCalculator;
-        this.receiptPrinter = receiptPrinter;
-        this.orderRepository = orderRepository;
-    }
-
-    public void processOrder(String customerName, String coffeeType, double basePrice) {
-        System.out.println("[Controller] Processing order for " + customerName + "...");
-
-        // 1. Calculate final price including 12% VAT using Harry's class
-        double finalPrice = taxCalculator.calculateTotalWithTax(basePrice);
-
-        // 2. Format and print the customer receipt using Diane's class
-        receiptPrinter.printReceipt(customerName, coffeeType, finalPrice);
-
-        // 3. Save the transaction logs to the text file using Justine's class
-        orderRepository.saveOrder(customerName, coffeeType, finalPrice);
-
-        System.out.println("[Controller] Order successfully finalized.");
+    public void processOrder(String customerName, String coffeeType, double price) {
+        // --- RESPONSIBILITY 1: Business Logic & Tax Calculations ---
+        System.out.println("[System] Calculating final totals...");
+        double localTax = 0.12; // Hardcoded 12% VAT
+        double finalPrice = price + (price * localTax);
+        
+        // --- RESPONSIBILITY 2: Presentation & Formatting ---
+        System.out.println("\n===== COFFEE SHOP RECEIPT =====");
+        System.out.println("Customer: " + customerName);
+        System.out.println("Beverage: " + coffeeType);
+        System.out.println("Total Amount (incl. Tax): PHP " + finalPrice);
+        System.out.println("================================\n");
+        
+        // --- RESPONSIBILITY 3: Data Persistence & Storage ---
+        System.out.println("[System] Saving transaction logs to disk...");
+        FileWriter writer = null;
+        try {
+            // Hardcoded local text file deployment
+            writer = new FileWriter("orders_log.txt", true);
+            writer.write("Customer: " + customerName + " | Item: " + coffeeType + " | Total: " + finalPrice + "\n");
+            System.out.println("[Database] Log successfully written to orders_log.txt");
+        } catch (IOException e) {
+            System.out.println("[CRITICAL ERROR] Failed to write to file system: " + e.getMessage());
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
