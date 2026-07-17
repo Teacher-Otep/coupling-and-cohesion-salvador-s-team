@@ -1,19 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.coffeeshop.naive;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Starting Naive Coffee Shop System ===");
-        
-        OrderProcessor processor = new OrderProcessor();
-        
-        // Simulating a customer ordering a Java Chip Frappe
-        // Parameters: Customer Name, Coffee Item, Base Price
-        processor.processOrder("Juan Dela Cruz", "Java Chip Frappe", 150.0);
-        
-        System.out.println("\n=== Order Processing Complete ===");
+        System.out.println("=== COFFEE SHOP SYSTEM START ===");
+
+        // 1. Initialize the individual high-cohesion classes
+        TaxCalculator taxCalculator = new TaxCalculator();
+        ReceiptPrinter receiptPrinter = new ReceiptPrinter();
+        OrderRepository orderRepository = new OrderRepository();
+
+        // 2. Inject them into the controller (Loose Coupling)
+        OrderController controller = new OrderController(taxCalculator, receiptPrinter, orderRepository);
+
+        // 3. Define sample transaction data
+        String customerName = "Diane";
+        String coffeeType = "Caramel Macchiato";
+        double basePrice = 150.00;
+
+        // 4. Execute the order process flow
+        controller.processOrder(customerName, coffeeType, basePrice);
     }
 }
